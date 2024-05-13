@@ -20,8 +20,26 @@ sudo apt upgrade -y
 echo "Instalando o Google Chrome e o Visual Studio Code..."
 sudo apt install google-chrome-stable code -y
 
+# Verifica o sistema operacional e instala os Flatpaks apropriados
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    if [ "$ID" == "ubuntu" ]; then
+        echo "Instalando Flatpaks no Ubuntu..."
+        sudo apt install flatpak -y
+        sudo add-apt-repository ppa:flatpak/stable -y
+        sudo apt update
+        sudo apt install flatpak -y
+    elif [ "$ID" == "pop" ]; then
+        echo "Instalando Flatpaks no Pop!_OS..."
+        sudo apt install flatpak -y
+        flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    else
+        echo "Distribuição não suportada para instalação de Flatpaks."
+    fi
+fi
+
 # Instala os Flatpaks
-echo "Instalando Flatpaks..."
+echo "Instalando Flatpaks adicionais..."
 flatpak install flathub org.onlyoffice.desktopeditors -y
 flatpak install flathub org.filezillaproject.Filezilla -y
 flatpak install flathub com.obsproject.Studio -y
